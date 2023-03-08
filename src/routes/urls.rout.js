@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { validationToken } from '../autorization/validationToken';
-import { deleteUrlId, getOpenUrlShort, getUrlId, postUrlShorten } from '../controller/urls';
-import { validateSchema } from '../middleware/validationSchema';
-import { urlSchema } from '../schema/urlSchema';
+import { validationToken } from '../autorization/validationToken.js';
+import { deleteUrlId, getOpenUrlShort, getUrlId, postUrlShorten } from '../controller/urls.js';
+import { validateSchema } from '../middleware/validationSchema.js';
+import { urlSchema } from '../schema/urlSchema.js';
 
 
 const url = Router();

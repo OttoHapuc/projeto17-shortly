@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import users from './routes/users.js';
-import url from './routes/urls.js';
-import login from './routes/login.js';
+import users from './routes/users.rout.js';
+import url from './routes/urls.rout.js';
+import login from './routes/login.rout.js';
 
 dotenv.config();
 

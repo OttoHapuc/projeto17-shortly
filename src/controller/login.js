@@ -1,5 +1,5 @@
 import { dataBase } from "../config/dataBase.js";
-import bcrypt from 'bcript';
+import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 
 export async function postSignUp(req, res) {

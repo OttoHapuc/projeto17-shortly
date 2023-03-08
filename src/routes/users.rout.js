@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validationToken } from "../autorization/validationToken";
+import { validationToken } from "../autorization/validationToken.js";
 
 const users = Router();
 
