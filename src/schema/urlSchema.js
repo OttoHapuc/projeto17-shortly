@@ -1,5 +1,5 @@
-import Joi from "joi";
+import joi from "joi";
 
-export const urlSchema = Joi.object({
-    
+export const urlSchema = joi.object({
+    url: joi.string().uri().required()
 });
