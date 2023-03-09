@@ -8,12 +8,12 @@ export async function postSignUp(req, res) {
         const userExist = await dataBase.query(`
         select * from "users" where email=$1
         `, [email]);
-        if (userExist.rowCount() > 0) return res.sendStatus(409);
+        if (userExist.rowCount > 0) return res.sendStatus(409);
         const hash = bcrypt.hashSync(password, 5);
         await dataBase.query(`
         insert into "users" (name, email, password)
         values ($1, $2, $3)
-        `, [name, email, password]);
+        `, [name, email, hash]);
         res.status(201).send("OK");
     } catch (error) {
         res.status(500).send(error.message);
@@ -30,7 +30,7 @@ export async function postSignIn(req, res) {
         if (bcrypt.compareSync(password, user.rows[0].password)) {
             const token = uuid();
             await dataBase.query(`
-            insert into "tokens" (token, userid)
+            insert into "tokens" (token, iduser)
             values ($1,$2)
             `, [token, user.rows[0].id]);
             return res.send({ token });

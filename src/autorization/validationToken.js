@@ -11,7 +11,7 @@ export async function validationToken(req, res, next) {
         if (!activeUser.rows) return res.sendStatus(401);
         const userExist = await dataBase.query(`
         select * from users where id=$1
-        `, [activeUser.rows[0].userid]);
+        `, [activeUser.rows[0].iduser]);
         if (!userExist.rows) return res.sendStatus(401);
         res.locals.userExist = userExist.rows[0];
         next();

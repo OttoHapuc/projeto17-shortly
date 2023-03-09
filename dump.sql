@@ -94,7 +94,7 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     email text NOT NULL,
     name text NOT NULL,
-    password integer NOT NULL,
+    password text NOT NULL,
     createat timestamp without time zone DEFAULT now() NOT NULL
 );
 

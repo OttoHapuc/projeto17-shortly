@@ -4,10 +4,11 @@ import { dataBase } from "../config/dataBase.js";
 export async function postUrlShorten(req, res) {
     const { url } = req.body;
     const { id } = res.locals.userExist;
+    console.log( res.locals.userExist)
     const shortenUrl = nanoid(12);
     try {
         const short = await dataBase.query(`
-        inser into "urls" (url, shorturl, userid)
+        insert into "urls" (url, shorturl, iduser)
         values ($1, $2, $3)
         returning id
         `, [url, shortenUrl, id]);
@@ -24,7 +25,7 @@ export async function getUrlId(req, res) {
     const {id} = req.params;
     try {
         const url = await dataBase.query(`
-        selec * from "urls" where id =$1
+        select * from "urls" where id =$1
         `, [id]);
         if(url.rowCount === 0) return res.sendStatus(404);
         return res.send({
@@ -39,13 +40,13 @@ export async function getUrlId(req, res) {
 
 export async function deleteUrlId(req, res) {
     const {id} = req.params;
-    const {userExists} = req.locals.userExist;
+    const userExists = res.locals.userExist;
     try {
         const url = await dataBase.query(`
-        selec * from "urls" where id =$1
+        select * from "urls" where id =$1
         `, [id]);
         if(url.rowCount === 0) return res.sendStatus(404);
-        if(url.rows[0].id !== userExists.id) return res.sendStatus(401);
+        if(url.rows[0].iduser !== userExists.id) return res.sendStatus(401);
         await dataBase.query(`
         delete from "urls" where id=$1
         `,[id]);
@@ -60,11 +61,11 @@ export async function getOpenUrlShort(req, res) {
     const {shortUrl} = req.params;
     try {
         const url = await dataBase.query(`
-        selec * from "urls" where id =$1
+        select * from "urls" where shorturl =$1
         `, [shortUrl]);
         if(url.rowCount === 0) return res.sendStatus(404);
         await dataBase.query(`
-        update "shorturl" set visitcount = visitcount + 1
+        update "urls" set visitcount = visitcount + 1
         where id = $1
         `,[url.rows[0].id]);
         return res.redirect(url.rows[0].url);
