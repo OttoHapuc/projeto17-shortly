@@ -1,18 +1,18 @@
 import { dataBase } from "../config/dataBase.js";
 import bcrypt from 'bcrypt';
 
-export async function getUser(req, res){
-    const { userExist } = res.locals.userExist;
+export async function getUser(req, res) {
+    const userExist = res.locals.userExist;
     try {
         const totalsVisited = await dataBase.query(`
-        select sum("urls".visitcount)
-        from "urls" where "userid"=$1
+        select SUM("urls".visitcount)
+        from "urls" where iduser=$1
         `, [userExist.id]);
         const userUrls = await dataBase.query(`
         select *
-        from "urls" where userid = $1
+        from "urls" where iduser = $1
         `, [userExist.id]);
-        const userUrlsArray = userUrls.rows.map( (row) =>{
+        const userUrlsArray = userUrls.rows.map((row) => {
             return {
                 id: row.id,
                 shortUrl: row.shorturl,
@@ -23,7 +23,7 @@ export async function getUser(req, res){
         return res.send({
             id: userExist.id,
             name: userExist.name,
-            visitCount: totalsVisited.rows[0].visitcount.sum || 0,
+            visitCount: totalsVisited.rows[0].sum || 0,
             shortenedUrls: userUrlsArray
         })
     } catch (error) {
@@ -31,17 +31,18 @@ export async function getUser(req, res){
     }
 }
 
-export async function getRanking(req, res){
+export async function getRanking(req, res) {
     try {
         const visitCount = await dataBase.query(`
-        select users.id, users.name, count("urls".id) as "linksCount", sum("urls".visitcount) as "visitCount"
+        select users.id, users.name, count("urls".id) as "linksCount", coalesce(sum("urls".visitcount),0) as "visitCount"
         from users 
         LEFT JOIN "urls" 
-        ON "urls".userid = users.id
+        ON "urls".iduser = users.id
         GROUP BY users.id
         order by "visitCount" DESC
         limit 10
         `)
+        res.send(visitCount.rows)
     } catch (error) {
         res.status(500).send(error.message);
     }
